@@ -19,8 +19,11 @@ export const Widget = () => {
         <div>
             <Header text="Widget" />
             <div className={globalStyles.mainBackground} style={{ bottom: '10px' }}>
+                <div>Biểu đồ công việc</div>
                 <ActivityChart/>
+                <div>KPI hôm nay</div>
                 <TodayWork/>
+                <div>KPI nhóm công việc</div>
                 <ListWork works={works}/>
             </div>
         </div>

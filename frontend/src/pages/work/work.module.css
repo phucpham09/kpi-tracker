@@ -148,3 +148,12 @@
   border-radius: 5px;
 }
 
+.checkBox {
+  width: 25px;
+  height: 25px; 
+}
+
+.checkBox:checked {
+  background-color: #2196F3;
+  border-color: #2196F3; 
+}

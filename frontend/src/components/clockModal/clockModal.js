@@ -1,38 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './clockModal.module.css';
 import { Icon } from '@iconify/react';
 
-const ClockModal = ({ onTimeSelect }) => {
+const ClockModal = ({ onTimeSelect, disabled }) => {
   const [hour, setHour] = useState(24);
   const [minute, setMinute] = useState(0);
   const [isHourSelection, setIsHourSelection] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [isHourSelected, setIsHourSelected] = useState(false);
 
+  useEffect(() => {
+    if (disabled) {
+      setModalVisible(false);
+    }
+  }, [disabled]);
+
   const handleHourClick = (hour) => {
-    setHour(hour);
-    setIsHourSelected(true);
-    setTimeout(() => {
-      setIsHourSelection(false);
-    }, 500);
+    if (!disabled) {
+      setHour(hour);
+      setIsHourSelected(true);
+      setTimeout(() => {
+        setIsHourSelection(false);
+      }, 500);
+    }
   };
 
   const handleMinuteClick = (minute) => {
-    setMinute(minute);
+    if (!disabled) {
+      setMinute(minute);
+    }
   };
 
   const handleSubmit = () => {
-    const selectedTime = { hour, minute };
-    onTimeSelect(selectedTime); 
-    setModalVisible(false);
+    if (!disabled) {
+      const selectedTime = { hour, minute };
+      onTimeSelect(selectedTime);
+      setModalVisible(false);
+    }
   };
 
   const handleCancel = () => {
-    setModalVisible(false);
+    if (!disabled) {
+      setModalVisible(false);
+    }
   };
 
   const toggleModal = () => {
-    setModalVisible(!modalVisible);
+    if (!disabled) {
+      setModalVisible(!modalVisible);
+    }
   };
 
   const getTransformForSelection = () => {
@@ -60,7 +76,7 @@ const ClockModal = ({ onTimeSelect }) => {
 
   return (
     <>
-      <button onClick={toggleModal} className={styles.buttonClock}>
+      <button onClick={toggleModal} className={styles.buttonClock} disabled={disabled}>
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '12px' }}>
           <Icon icon="mdi:clock-outline" style={{ fontSize: '20px', marginRight: '10px' }} />
           {`${formatNumber(hour)} : ${formatNumber(minute)}`}

@@ -21,7 +21,7 @@ export const App = () => {
     return (
         <HashRouter>    
             <Routes>
-            <Route path="/" element={<Login />} />
+                <Route path="/" element={<Login />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Signup />} />
                 <Route path="/home" element={<Home/>} />

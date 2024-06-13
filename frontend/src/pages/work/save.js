@@ -11,31 +11,38 @@ export const ViewWork = () => {
   const [work, setWork] = useState(initialWorkData);
   const [alert, setAlert] = useState(false);
 
-  const calculateKPI = (index) => {
+  const calculateKPI = () => {
     setWork(prevWork => {
-      const updatedTasks = [...prevWork.tasks];
-      const task = updatedTasks[index];
-      const startDate = new Date(`${task.startDate}T${task.startTime}`);
-      const endDate = new Date(`${task.endDate}T${task.endTime}`);
-      const currentTime = new Date();
-      const timeDiffStart = currentTime.getTime() - startDate.getTime();
-      const timeDiffEnd = endDate.getTime() - startDate.getTime();
-      const timeDiffStartPositive = Math.max(0, timeDiffStart);
-      const percentage = Math.min(100, (timeDiffStartPositive / timeDiffEnd) * 100);
-      updatedTasks[index].percentage = task.completed ? percentage.toFixed(2) : "0";
-      updatedTasks[index].completedTime = task.completed ? currentTime : null;
+      const updatedTasks = prevWork.tasks.map((task) => {
+        const startDate = new Date(`${task.startDate}T${task.startTime}`);
+        const endDate = new Date(`${task.endDate}T${task.endTime}`);
+        const currentTime = new Date();
+        const timeDiffStart = currentTime.getTime() - startDate.getTime();
+        const timeDiffEnd = endDate.getTime() - startDate.getTime();
+        const timeDiffStartPositive = Math.max(0, timeDiffStart);
+        const percentage = Math.min(100, (timeDiffStartPositive / timeDiffEnd) * 100);
+        return {
+          ...task,
+          percentage: task.completed ? percentage.toFixed(2) : "0",
+          completedTime: task.completed ? currentTime : null
+        };
+      });
       return { ...prevWork, tasks: updatedTasks };
     });
   };
+
+  useEffect(() => {
+    calculateKPI();
+  }, [work.tasks]);
 
   const handleCheckboxChange = (index) => {
     const updatedTasks = [...work.tasks];
     updatedTasks[index].completed = !updatedTasks[index].completed;
     setWork({ ...work, tasks: updatedTasks });
-    calculateKPI(index);
   };
 
   const saveChange = () => {
+    localStorage.setItem('scheduleData', JSON.stringify(work));
     setAlert(true);
     setTimeout(() => {
       setAlert(false);
@@ -82,8 +89,8 @@ export const ViewWork = () => {
               const taskEndTime = new Date(`${task.endDate}T${task.endTime}`).getTime();
               const taskCompleteTime = task.completedTime ? new Date(task.completedTime).getTime() : null;
 
-              const minTime = Math.min(workStartTime, taskStartTime, workEndTime, taskEndTime, taskCompleteTime);
-              const maxTime = Math.max(workStartTime, taskStartTime, workEndTime, taskEndTime, taskCompleteTime);
+              const minTime = Math.min(workStartTime, taskStartTime, workEndTime, taskEndTime);
+              const maxTime = Math.max(workEndTime, taskEndTime);
 
               const startTaskPosition = calculateTimePosition(taskStartTime, minTime, maxTime);
               const endTaskPosition = calculateTimePosition(taskEndTime, minTime, maxTime);
@@ -101,11 +108,7 @@ export const ViewWork = () => {
                     <div className={styles.progressBackground} style={{ width: '100%' }} />
                     <div 
                       className={styles.progressFill} 
-                      style={{ 
-                        left: `${startTaskPosition}%`,
-                        width: `${endTaskPosition - startTaskPosition}%`,
-                        backgroundColor: 'lightgreen'  // Tô xanh task start và task end của thanh nhiệm vụ
-                      }} 
+                      style={{ left: `${startTaskPosition}%`, width: `${endTaskPosition - startTaskPosition}%`}} 
                     />
                     <OverlayTrigger trigger="click" placement="top" overlay={renderPopover('Work Start', work.startDate, work.startTime)}>
                       <div className={styles.startTooltip} style={{ left: '0%' }} />
@@ -114,19 +117,16 @@ export const ViewWork = () => {
                       <div className={styles.endTooltip} style={{ left: '100%' }} />
                     </OverlayTrigger>
                     {task.completed && (
-                      <>
-                        <OverlayTrigger trigger="click" placement="top" overlay={renderPopover('Completion Time', new Date(task.completedTime).toLocaleDateString(), new Date(task.completedTime).toLocaleTimeString())}>
-                          <div className={styles.completionMarker} style={{ left: `${completeTaskPosition}%`, transform: 'translateX(-50%)' }} />
-                        </OverlayTrigger>
-                       
-                      </>
+                      <OverlayTrigger trigger="click" placement="top" overlay={renderPopover('Completion Time', new Date(task.completedTime).toLocaleDateString(), new Date(task.completedTime).toLocaleTimeString())}>
+                        <div className={styles.completionMarker} style={{ left: `${completeTaskPosition}%`, transform: 'translateX(-50%)' }} />
+                      </OverlayTrigger>
                     )}
-                     <OverlayTrigger trigger="click" placement="top" overlay={renderPopover('Task Start', task.startDate, task.startTime)}>
-                          <div className={styles.startTooltip} style={{ left: `${startTaskPosition}%` }} />
-                        </OverlayTrigger>
-                        <OverlayTrigger trigger="click" placement="top" overlay={renderPopover('Task End', task.endDate, task.endTime)}>
-                          <div className={styles.endTooltip} style={{ left: `${endTaskPosition}%` }} />
-                        </OverlayTrigger>
+                    <OverlayTrigger trigger="click" placement="top" overlay={renderPopover('Task Start', task.startDate, task.startTime)}>
+                      <div className={styles.startTooltip} style={{ left: `${startTaskPosition}%` }} />
+                    </OverlayTrigger>
+                    <OverlayTrigger trigger="click" placement="top" overlay={renderPopover('Task End', task.endDate, task.endTime)}>
+                      <div className={styles.endTooltip} style={{ left: `${endTaskPosition}%` }} />
+                    </OverlayTrigger>
                   </div>
                   <div className={styles.taskPercentage}>
                     {parseFloat(task.percentage) ?? 0}%

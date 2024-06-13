@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './calendar.module.css';
 import { Icon } from '@iconify/react';
 
-const CalendarModal = ({ onDateSelect }) => {
+const CalendarModal = ({ onDateSelect, disabled }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [modalVisible, setModalVisible] = useState(false);
@@ -40,18 +40,22 @@ const CalendarModal = ({ onDateSelect }) => {
   }
 
   const toggleModal = () => {
-    setModalVisible(!modalVisible);
+    if (!disabled) {
+      setModalVisible(!modalVisible);
+    }
   };
 
   const handleSubmit = () => {
-    if (onDateSelect && selectedDate) {
+    if (!disabled && onDateSelect && selectedDate) {
       onDateSelect(selectedDate);
+      setModalVisible(false);
     }
-    setModalVisible(false);
   };
 
   const handleCancel = () => {
-    setModalVisible(false);
+    if (!disabled) {
+      setModalVisible(false);
+    }
   };
 
   const formatDate = (date) => {
@@ -64,13 +68,13 @@ const CalendarModal = ({ onDateSelect }) => {
 
   return (
     <>
-      <button onClick={toggleModal} className={styles.buttonClock}>
+      <button onClick={toggleModal} className={styles.buttonClock} disabled={disabled}>
         <span>
           {selectedDate && (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '12px' }}>
-                <Icon icon="tabler:calendar-time" style={{ fontSize: '20px', marginRight: '10px' }} /> 
-                {formatDate(selectedDate)}
-            </div>        
+              <Icon icon="tabler:calendar-time" style={{ fontSize: '20px', marginRight: '10px' }} />
+              {formatDate(selectedDate)}
+            </div>
           )}
         </span>
       </button>
