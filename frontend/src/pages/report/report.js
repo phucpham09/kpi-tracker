@@ -10,14 +10,14 @@ import PieChart from '../../components/pieChart/pieChart';
 export const Report = () => {
     const [dateRange, setDateRange] = useState('7');
     const handelSetDateRange = (eventKey) => setDateRange(eventKey);
-    const [tags, setTags] = useState(['Bài tập trên lớp', 'Việc nhà']);
+    const [tags, setTags] = useState(['Lập trình', 'Tiếng Nhật', 'Kỹ năng Mềm', 'Thể dục', 'Tiếng Anh']);
     
     return (
         <div>
              <Header text="Thống kê" />
             <div className ={globalStyles.mainBackground}>
                 <div className={styles.tagContainer}>
-                    <div style={{ fontWeight: '510' }}>Tag</div>
+                    <div style={{ fontWeight: '510' }}>Công việc:</div>
                     {tags.map((tag, index) => (
                     <div key={index} className={styles.tag}>
                         # {tag}

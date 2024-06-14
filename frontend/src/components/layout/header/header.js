@@ -14,7 +14,7 @@ export const Header = ({ text }) => {
 
     const handleLogout = () => {
         console.log('Logout success');
-        navigate('/login');
+        navigate('/');
     };
 
     const popover = (

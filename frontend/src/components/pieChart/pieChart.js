@@ -7,7 +7,7 @@ ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 const PieChart = () => {
   const data = {
-    labels: ['Good/Excellent', 'Slow', 'Bad'],
+    labels: ['Tốt/Xuất sắc', 'Khá', 'Tệ'],
     datasets: [
       {
         data: [58, 22, 20],

@@ -1,0 +1,119 @@
+/* styles.css */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    
+  }
+  
+  .container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Đảm bảo trang tối thiểu bằng chiều cao của màn hình */
+    background-color: #fff;
+    overflow-y: auto; /* Cho phép cuộn dọc */
+    overflow-x: hidden; /* Chỉ ẩn cuộn ngang */
+  }
+  
+  .title {
+    font-size: 28px;
+    font-weight: 500;
+    color: #281b52;
+    text-align: center;
+    margin-bottom: 12px;
+    line-height: 40px;
+  }
+  
+  .text {
+    font-size: 15px;
+    line-height: 24px;
+    font-weight: 400;
+    color: #9992a7;
+    text-align: center;
+  }
+  
+  /* Hero */
+  .hero {
+    background-color: transparent;
+    margin: 12px;
+    border-radius: 16px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    height: 400px;
+  }
+  
+  .animated-background {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fad0c4, #ffd1ff, #fbc2eb, #a1c4fd, #c2e9fb, #e0c3fc, #fbc2eb, #a1c4fd);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite;
+    top: -50%;
+    left: -50%;
+    z-index: 0;
+  }
+  
+  @keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  /* Content */
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    padding: 24px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .contentHeader {
+    text-align: center; /* Center text horizontally */
+    padding: 24px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .logo {
+    max-width: 100%; /* Responsive width */
+    height: auto; /* Maintain aspect ratio */
+    margin-bottom: 20px; /* Space between logo and title */
+  }
+  
+  .appName {
+    background-color: #fff2dd;
+    transform: rotate(-5deg);
+    display: inline-block;
+    padding: 0 6px;
+  }
+  
+  .appNameText {
+    font-size: 28px;
+    font-weight: 700;
+    color: #281b52;
+  }
+  
+  /* Button */
+  .button {
+    background-color: #56409e;
+    padding: 12px 14px;
+    display: inline-block;
+    text-align: center;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  
+  .button:hover {
+    background-color: #45348b;
+  }

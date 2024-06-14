@@ -22,29 +22,30 @@ export const ViewWork = () => {
   useEffect(() => {
     const completedTasks = workData.tasks.filter(task => task.completed);
     const percent = (completedTasks.length / workData.tasks.length) * 100;
-    setPercentage(percent);
+    setPercentage(percent.toFixed(2)); 
   }, [workData.tasks]);
+  
 
   const handleDeleteTask = (index) => {
-    setWorkData(prevData => {
-      const updatedTasks = [...prevData.tasks];
-      updatedTasks.splice(index, 1);
-      return { ...prevData, tasks: updatedTasks };
-    });
+    // setWorkData(prevData => {
+    //   const updatedTasks = [...prevData.tasks];
+    //   updatedTasks.splice(index, 1);
+    //   return { ...prevData, tasks: updatedTasks };
+    // });
   };
   
   const handleAddTask = () => {
-    setWorkData(prevData => {
-      const newTasks = [...prevData.tasks, { name: '', completed: false }];
-      return { ...prevData, tasks: newTasks };
-    });
+    // setWorkData(prevWorkData => {
+    //   const newTasks = [...prevWorkData.tasks, { name: '', completed: false }];
+    //   return { ...prevWorkData, tasks: newTasks };
+    // });
   };
-
+  
   const handleTaskInputChange = (index, field, value) => {
-    setWorkData(prevData => {
-      const updatedTasks = [...prevData.tasks];
+    setWorkData(prevworkData => {
+      const updatedTasks = [...prevworkData.tasks];
       updatedTasks[index][field] = value;
-      return { ...prevData, tasks: updatedTasks };
+      return { ...prevworkData, tasks: updatedTasks };
     });
   };
 
@@ -179,23 +180,7 @@ export const ViewWork = () => {
               </div>
 
             ))}
-
-            <div style={{ display: 'flex', alignItems: 'center', marginTop: '30px', justifyContent: 'center' }}>
-              <span style={{ marginRight: '10px', whiteSpace: 'nowrap' }}>Tỉ lệ hoàn thành công việc</span>
-              <div style={{ maxWidth: '80px', maxHeight: '80px' }}>
-                <CircularProgressbar
-                  value={percentage}
-                  text={`${percentage}%`}
-                  styles={buildStyles({
-                    pathColor: '#605DEC',
-                    textColor: '#605DEC',
-                    trailColor: '#d6d6d6',
-                    backgroundColor: '#EBEBF6',
-                  })}
-                />
-              </div>
-            </div>
-            {isEditing && (
+          {isEditing && (
               <div style={{ display: 'flex', justifyContent: 'right', padding: '10px' }}>
               <button className={styles.addWork} onClick={handleAddTask}>
                 <Icon icon="material-symbols-light:add-circle-outline" style={{ fontSize: '20px', marginRight: '10px' }} />
@@ -203,6 +188,30 @@ export const ViewWork = () => {
               </button>
             </div>
             )}
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '30px', justifyContent: 'center' }}>
+              <span style={{ marginRight: '15px',  marginTop: '35px', whiteSpace: 'nowrap' }}>Tỉ lệ hoàn thành công việc</span>
+              <div style={{ maxWidth: '80px', maxHeight: '80px', textAlign: 'center' }}>
+                {percentage >= 90 && percentage <= 100 ? (
+                  <><span style={{color: '#4CAF50', fontWeight: 'bold'}}>Xuất sắc !</span></>
+                ) : percentage >= 75 && percentage < 90 ? (
+                  <><span style={{color: '#4CAF50', fontWeight: 'bold'}}>Tốt !</span></>
+                ) : percentage >= 50 && percentage < 75 ? (
+                  <><span style={{color: '#FFC107', fontWeight: 'bold'}}>Khá !</span></>
+                ) : (
+                  <><span style={{color: '#F44336', fontWeight: 'bold'}}>Tệ !</span></>
+                )}
+                <CircularProgressbar
+                      value={percentage}
+                      text={`${percentage}%`}
+                      styles={buildStyles({
+                        pathColor: '#605DEC',
+                        textColor: '#605DEC',
+                        trailColor: '#d6d6d6',
+                        backgroundColor: '#EBEBF6',
+                      })}
+                    />
+              </div>
+            </div>
             </div>
             
             <div className={styles.flexRow}>

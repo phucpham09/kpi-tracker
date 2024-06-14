@@ -6,18 +6,18 @@ ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, 
 
 const RadarChart = () => {
   const data = {
-    labels: ['JavaScript', 'HTML', 'CSS', 'Thể dục', 'Tiếng Anh', 'Tiếng Nhật'],
+    labels: ['Lập trình', 'Tiếng Nhật', 'Kỹ năng Mềm', 'Thể dục', 'Tiếng Anh'],
     datasets: [
       {
         label: '<50%',
-        data: [3, 2, 2, 3, 4, 3],
+        data: [3, 5, 2, 3, 4],
         backgroundColor: 'rgba(255, 206, 86, 0.2)',
         borderColor: 'rgba(255, 206, 86, 1)',
         borderWidth: 1,
       },
       {
         label: '>50%',
-        data: [4, 3, 2, 5, 5, 4],
+        data: [4, 3, 4, 5, 6],
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1,
