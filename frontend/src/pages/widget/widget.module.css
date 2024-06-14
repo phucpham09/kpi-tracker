@@ -1,0 +1,25 @@
+.button {
+    height: 45px;
+    font-weight: 600;
+    width: 100%;
+    border-radius: 10px;
+    margin-top: 20px;
+  }
+
+.checkBox {
+  width: 15px;
+  height: 15px; 
+}
+
+.flexContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: auto;
+}
+
+.Item {
+  border-radius: 5px;
+  border: 1px solid #9e9e9e;
+}

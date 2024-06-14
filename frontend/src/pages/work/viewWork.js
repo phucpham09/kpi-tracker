@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Alert, Dropdown } from 'react-bootstrap';
+import { Button, Form, Alert } from 'react-bootstrap';
 import globalStyles from '../../globalStyles.module.css';
 import styles from './work.module.css';
 import Header from '../../components/layout/header/header';
@@ -9,16 +9,16 @@ import CalendarModal from '../../components/calendar/calendarModal';
 import { Icon } from '@iconify/react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { useSwipeable } from 'react-swipeable';
 
 export const ViewWork = () => {
-
   const storedWorkData = localStorage.getItem('scheduleData');
-  const initialWorkData = storedWorkData ? JSON.parse(storedWorkData) : {};
+  const initialWorkData = storedWorkData ? JSON.parse(storedWorkData) : { tasks: [] };
   const [workData, setWorkData] = useState(initialWorkData);
   const [isEditing, setIsEditing] = useState(false);
   const [percentage, setPercentage] = useState(0);
   const [alert, setAlert] = useState(false);
-  
+
   useEffect(() => {
     const completedTasks = workData.tasks.filter(task => task.completed);
     const percent = (completedTasks.length / workData.tasks.length) * 100;
@@ -32,10 +32,10 @@ export const ViewWork = () => {
       return { ...prevData, tasks: updatedTasks };
     });
   };
-
+  
   const handleAddTask = () => {
     setWorkData(prevData => {
-      const newTasks = [...prevData.tasks, { name: '' }];
+      const newTasks = [...prevData.tasks, { name: '', completed: false }];
       return { ...prevData, tasks: newTasks };
     });
   };
@@ -87,6 +87,27 @@ export const ViewWork = () => {
     setWorkData({ ...workData, tasks: updatedTasks });
   };
 
+  const handleSwipeLeft = (index) => {
+    if (isEditing) {
+      setWorkData(prevData => {
+        const updatedTasks = [...prevData.tasks];
+        updatedTasks[index].showDelete = true;
+        return { ...prevData, tasks: updatedTasks };
+      });
+    }
+  };
+  
+  const handleSwipeRight = (index) => {
+    if (isEditing) {
+      setWorkData(prevData => {
+        const updatedTasks = [...prevData.tasks];
+        updatedTasks[index].showDelete = false;
+        return { ...prevData, tasks: updatedTasks };
+      });
+    }
+  };
+  
+
   return (
     <div>
       <Header text="Chi tiết công việc" />
@@ -97,11 +118,11 @@ export const ViewWork = () => {
             <Form.Control value={workData.workGroup} readOnly={true} />
           </div>
           <div>
-            <Form.Label style={{ fontWeight: 'bold', margin: '10px 0 5px 0'  }}>Tiêu đề</Form.Label>
-            <Form.Control 
+            <Form.Label style={{ fontWeight: 'bold', margin: '10px 0 5px 0' }}>Tiêu đề</Form.Label>
+            <Form.Control
               placeholder="Nhập tiêu đề"
-              value={workData.title} 
-              onChange={(event) => setWorkData(prevData => ({ ...prevData, title: event.target.value }))} 
+              value={workData.title}
+              onChange={(event) => setWorkData(prevData => ({ ...prevData, title: event.target.value }))}
               type='text'
               readOnly={!isEditing}
             />
@@ -109,8 +130,8 @@ export const ViewWork = () => {
             <textarea
               className={styles.note}
               placeholder="Nhập ghi chú"
-              value={workData.note} 
-              onChange={(event) => setWorkData(prevData => ({ ...prevData, note: event.target.value }))} 
+              value={workData.note}
+              onChange={(event) => setWorkData(prevData => ({ ...prevData, note: event.target.value }))}
               readOnly={!isEditing}
             />
             <hr />
@@ -129,73 +150,82 @@ export const ViewWork = () => {
             <div style={{ fontWeight: 'bold' }}>Nội dung công việc</div>
 
             {workData.tasks.map((task, index) => (
-              <div key={index} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px', margin: '10px'}} >
-                <input 
+              <div key={index} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px', margin: '10px'}} {...useSwipeable({
+                onSwipedLeft: () => handleSwipeLeft(index),
+                onSwipedRight: () => handleSwipeRight(index),
+                trackMouse: true,
+              })}>
+                {!task.showDelete ? (
+                  <input
                     type="checkbox"
-                    checked={task.completed} 
+                    checked={task.completed}
                     onChange={() => handleCheckboxChange(index)}
                     className={styles.checkBox}
                   />
-                <Form.Control 
+                ) : null}
+                <Form.Control
                   placeholder="Nội dung nhiệm vụ"
-                  value={task.name} 
-                  onChange={(event) => handleTaskInputChange(index, 'name', event.target.value)} 
+                  value={task.name}
+                  onChange={(event) => handleTaskInputChange(index, 'name', event.target.value)}
                   type='text'
                   readOnly={!isEditing}
                   style={{fontSize: '12px', height: '25px', backgroundColor: '#f2f2f2'}}
                 />
-                {isEditing && (
+                {task.showDelete && (
                   <button className={styles.deleteWork} onClick={() => handleDeleteTask(index)}>
                     <Icon icon="bi:trash3-fill" style={{ fontSize: '12px', color: 'white' }} />
                   </button>
                 )}
               </div>
+
             ))}
-            <div style={{ display: 'flex', alignItems: 'center', marginTop: '30px',  justifyContent: 'center' }}>
-              <span style={{ marginRight: '10px', textWrap: 'nowrap' }}>Tỉ lệ hoàn thành công việc</span>
+
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '30px', justifyContent: 'center' }}>
+              <span style={{ marginRight: '10px', whiteSpace: 'nowrap' }}>Tỉ lệ hoàn thành công việc</span>
               <div style={{ maxWidth: '80px', maxHeight: '80px' }}>
                 <CircularProgressbar
                   value={percentage}
                   text={`${percentage}%`}
                   styles={buildStyles({
-                    pathColor: '#605DEC', 
+                    pathColor: '#605DEC',
                     textColor: '#605DEC',
-                    trailColor: '#d6d6d6', 
-                    backgroundColor: '#EBEBF6', 
+                    trailColor: '#d6d6d6',
+                    backgroundColor: '#EBEBF6',
                   })}
                 />
               </div>
             </div>
             {isEditing && (
-              <div style={{ display: 'flex', justifyContent: 'right', padding: '10px'}}>
-                <button className={styles.addWork} onClick={handleAddTask}>
-                  <Icon icon="material-symbols-light:add-circle-outline" style={{ fontSize: '20px', marginRight: '10px'}} />
-                  Thêm mới
-                </button>
-              </div>
+              <div style={{ display: 'flex', justifyContent: 'right', padding: '10px' }}>
+              <button className={styles.addWork} onClick={handleAddTask}>
+                <Icon icon="material-symbols-light:add-circle-outline" style={{ fontSize: '20px', marginRight: '10px' }} />
+                Thêm mới
+              </button>
+            </div>
             )}
-          </div>
-
-          <div className={styles.flexRow}>
-            {isEditing ? (
-              <>
-                <Button className={styles.button} onClick={saveChange}>Lưu</Button>
-                <Button className={styles.button} onClick={cancel} variant="danger">Hủy bỏ</Button>
-              </>
-            ) : (
-              <Button className={styles.button} onClick={toggleEditing}>Chỉnh sửa</Button>
-            )}
-          </div>
-        </div>
-        {alert && (
+            </div>
+            
+            <div className={styles.flexRow}>
+              {isEditing ? (
+                <>
+                  <Button className={styles.button} onClick={saveChange}>Lưu</Button>
+                  <Button className={styles.button} onClick={cancel} variant="danger">Hủy bỏ</Button>
+                </>
+              ) : (
+                <Button className={styles.button} onClick={toggleEditing}>Cập nhật</Button>
+              )}
+            </div>
+            </div>
+            {alert && (
             <Alert variant="success" dismissible className={globalStyles.Notification}>
-                Thêm công việc thành công!
+              Thêm công việc thành công!
             </Alert>
-        )}
-      </div>
-      <Footer option="work"/>
-    </div>
-  );
-};
-
-export default ViewWork;
+            )}
+            </div>
+            <Footer option="work" />
+            </div>
+            );
+            };
+            
+            export default ViewWork;
+            

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import globalStyles from '../../globalStyles.module.css'
 import styles from './home.module.css'
@@ -13,6 +13,20 @@ import ListWork from '../../components/listWork/listWork';
 export const Home = () => {
     const navigate = useNavigate();
 
+    const [showActivityChart, setShowActivityChart] = useState(true);
+    const [showTodayWork, setShowTodayWork] = useState(true);
+    const [showListWork, setShowListWork] = useState(true);
+
+    useEffect(() => {
+        const widget1 = JSON.parse(localStorage.getItem('widget1'));
+        const widget2 = JSON.parse(localStorage.getItem('widget2'));
+        const widget3 = JSON.parse(localStorage.getItem('widget3'));
+
+        if (widget1 !== null) setShowActivityChart(widget1);
+        if (widget2 !== null) setShowTodayWork(widget2);
+        if (widget3 !== null) setShowListWork(widget3);
+    }, []);
+
     const [works] = useState([
         { title: 'Học từ vựng mới', note: 'Học 10 từ vựng mới mỗi ngày.', percent: 30 },
         { title: 'Luyện nghe', note: 'Nghe 30 phút podcast tiếng Việt mỗi ngày.', percent: 50 },
@@ -22,14 +36,14 @@ export const Home = () => {
     return (
         <div>
             <Header text="Trang chủ" />
-            <div className ={globalStyles.mainBackground}>
-                <div className ={styles.edit}  onClick={() => navigate('/widget')} >
+            <div className={globalStyles.mainBackground}>
+                <div className={styles.edit} onClick={() => navigate('/widget')} >
                     Chỉnh sửa <FontAwesomeIcon className={styles.iconAdd} icon={faEdit} />
                 </div>
-                <div style={{ marginTop: '15px'}}><ActivityChart /></div>
-                <div style={{ marginTop: '15px'}}><TodayWork /></div>
+                {showActivityChart && <div style={{ marginTop: '15px'}}><ActivityChart /></div>}
+                {showTodayWork && <div style={{ marginTop: '15px'}}><TodayWork /></div>}
                 <hr/>
-                <div><ListWork works={works}/></div>
+                {showListWork && <div><ListWork works={works}/></div>}
             </div>
             <Footer option="home" />
         </div>

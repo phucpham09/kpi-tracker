@@ -192,7 +192,7 @@ export const Setting = () => {
             <Alert variant="success" dismissible className={globalStyles.Notification}>
                 Lưu thay đổi thành công !
             </Alert>
-        )}
+          )}
         </div>
       <Footer option="setting" />
     </div>
