@@ -54,6 +54,8 @@
 .avatar {
    height: 60px;
    cursor: pointer;
+   width: 60px;
+   border-radius: 50%;
 }
 
 .button {

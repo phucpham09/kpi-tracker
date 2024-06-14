@@ -10,7 +10,7 @@ import { Icon } from '@iconify/react';
 export const Header = ({ text }) => {
     const navigate = useNavigate();
     const bellRef = useRef(null);
-    const [alerts] = useState([1]);
+    const [alerts] = useState([3]);
 
     const handleLogout = () => {
         console.log('Logout success');
@@ -46,7 +46,9 @@ export const Header = ({ text }) => {
                 )}
             </div>
             <OverlayTrigger trigger="click" placement="bottom" overlay={popover} rootClose>
-                <img src={Avatar} alt="anh" className={styles.avatar} />
+                {/* <img src={Avatar} alt="anh" className={styles.avatar} /> */}
+                <img className={styles.avatar} src="https://img.freepik.com/free-photo/confident-asian-woman-face-portrait-smiling_53876-144815.jpg?t=st=1718353600~exp=1718357200~hmac=372cadb1a20d9313b51cbb60db9551a7e03fea908f0e07efb1d2d39b6dd22808&w=740" alt="Avatar" />
+
             </OverlayTrigger>
         </div>
     );
